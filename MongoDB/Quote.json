@@ -1,0 +1,16 @@
+{
+    "quoteId": 1,
+    "clientId": 1,
+    "gallonsRequested": 1000.0,
+    "requestDate": "2018-10-20T06:00:00.000Z",
+    "deliveryDate": "2018-10-30T06:00:00.000Z",
+    "deliveryAddress": "123 Main Street",
+    "deliveryCity": "Austin",
+    "deliveryState": "TX",
+    "deliveryZipCode": "78701",
+    "deliveryContactName": "Raj Singh",
+    "deliveryContactPhone": 2101234567,
+    "deliveryContactEmail":"testemail@test.com",
+    "suggestedPrice":2.59,
+    "totalAmountDue":2590.0
+}
