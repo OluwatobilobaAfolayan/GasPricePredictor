@@ -3,6 +3,8 @@ import ClientInfo from './clientInfo';
 import Menu from './menu';
 import QuoteHistory from './quoteHistory';
 import RequestQuote from './requestQuote';
+import Profile from './profile';
+import ProfileForm from './profileForm'
 import './App.css';
 import Footer from './footer.js'
 import {Provider} from 'react-redux';
@@ -27,6 +29,8 @@ class App extends Component {
                       <Route path="/clientInfo" exact component={ClientInfo}/>
                       <Route path="/requestQuote" component={RequestQuote}/>
                       <Route path="/quoteHistory" component={QuoteHistory}/>
+                      <Route path='/profile/:profileName' component={Profile}/>
+                      <Route path='/profileForm' component={ProfileForm}/>
                       {/* <Footer/> */}
                   </div>
               </BrowserRouter>

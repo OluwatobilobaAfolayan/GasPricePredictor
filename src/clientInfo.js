@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import './App.css';
-import {Container ,Card} from 'semantic-ui-react'
-import { Dimmer, Loader, Image, Segment } from 'semantic-ui-react'
+import { Container,Dimmer, Loader, Icon} from 'semantic-ui-react'
+import {Link} from "react-router-dom";
+
 export default class ClientInfo extends Component{
 
   constructor(props) {
@@ -10,66 +11,53 @@ export default class ClientInfo extends Component{
       loading: true,
       ClientInfo: null
     };
-    // 
-    // fetch("http://localhost:3000/clientsInfo/")
-    // .then(res => {
-    //   console.log(res);
-    //   return res.json();
-    // })
-    // .then(data => {
-    //   let ClientInfo = data.map((user,index)=>{
-    //     return(
-    //       <Card style={{'width':'504px'}}>
-    //          <Card.Content>
-    //              <Card.Header content={user.name} />
-    //             <Card.Meta content='Info' />
-    //              <Card.Description content={
-    //                 <ul className='info'>
-    //                     <li><span className='ui header'>Address:</span>{user.address}</li>
-    //                   <li><span className='ui header'>Phone:</span>{user.phone}</li>
-    //                 <li><span className='ui header'>Email:</span>{user.email}</li>
-    //                 </ul>
-    //             } />
-    //         </Card.Content>
-    //      </Card>
-    //     )
-    //   })
-    //   this.setState({ClientInfo,loading:false})
-    // })
   }
 
     componentDidMount(){
-        let fakeJson =
-        [
-          {
-            "_id":"5bb7eee76332e970342228c7",
-            "clientId":1,
-            "name":"Emmanuel Afolayan",
-            "address":"1810, Aquarena Springs Drive, San Marcos, Texas",
-            "phone":"2344328973",
-            "email":"xyz@yahoo.com",
-            "__v":0
-          }
-        ];
-
-        let ClientInfo = fakeJson.map((user,index)=>{
+      fetch("http://localhost:3000/clientsInfo/")
+      .then(res => {
+        console.log(res);
+        return res.json();
+      })
+      .then(data => {
+        console.log(data)
+        let ClientInfo = data.map((user,index)=>{
           return(
-            <Card style={{'width':'504px'}}>
-               <Card.Content>
-                   <Card.Header content={user.name} />
-                  <Card.Meta content='Info' />
-                   <Card.Description content={
-                      <ul className='info'>
-                          <li><span className='ui header'>Address:</span>{user.address}</li>
-                        <li><span className='ui header'>Phone:</span>{user.phone}</li>
-                      <li><span className='ui header'>Email:</span>{user.email}</li>
-                      </ul>
-                  } />
-              </Card.Content>
-           </Card>
+            <Link to={{
+              pathname:`/profile/${user.fullName}`,
+              state:{
+                ...user
+              }
+            }} className = "card" key={user._id} >
+               <div className = "cardInfo">
+                  <div className = "cardHeader">
+                    <div className = "cardProfile">
+                      <img src = "http://profilepicturesdp.com/wp-content/uploads/2018/07/place-holder-for-profile-picture-1.jpg"/>
+                    </div>
+                    <span className = "cardName">
+                      {user.fullName}
+                    </span>
+                  </div>
+                  <ul className='cardMeta'>
+                      <li>
+                        <span className='cardMeta-title'>Address:</span>
+                        <span className ="cardMeta-text">{user.address}</span>
+                      </li>
+                      <li>
+                        <span className='cardMeta-title'>Phone:</span>
+                        <span className ="cardMeta-text">{user.phone}</span>
+                      </li>
+                      <li>
+                        <span className='cardMeta-title'>Email:</span>
+                        <span className ="cardMeta-text">{user.email}</span>
+                      </li>
+                 </ul>
+              </div>
+           </Link>
           )
         })
         this.setState({ClientInfo,loading:false})
+      })
     }
     render(){
       let {loading} = this.state;
@@ -78,6 +66,11 @@ export default class ClientInfo extends Component{
                 <div className="info-wrapper">
 
                      {!loading&&this.state.ClientInfo}
+                     {!loading&&
+                       <Link to="/profileForm" className = "card cardAdd">
+                          <Icon name="add user" size="huge" className="iconColor"/>
+                       </Link>
+                     }
                      {loading &&
                        <Dimmer active>
                          <Loader>Loading</Loader>

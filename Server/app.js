@@ -12,6 +12,12 @@ var quoteController = require('./routes/QuoteController');
   //console.log("We here")
 //})
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.use('/', intro);
 app.use('/clientsInfo', clientInfoController);
 app.use('/quotes', quoteController);
