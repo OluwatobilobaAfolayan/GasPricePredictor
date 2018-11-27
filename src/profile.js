@@ -24,16 +24,14 @@ export default class Profile extends Component{
     return(
       <div>
         {!loading && <div>PROFILE WORKS, {clientInfo.address}</div>}
-        <Button>
-          <Link to={{
-            pathname:`/profileForm`,
-            state:{
-              ...clientInfo
-            }
-          }}>
-          edit
-          </Link>
-        </Button>
+        <Link to={{
+          pathname:`/profileForm`,
+          state:{
+            ...clientInfo
+          }
+        }}>
+          <Button content='Edit'/>
+        </Link>
       </div>
 
     )

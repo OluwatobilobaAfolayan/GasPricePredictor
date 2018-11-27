@@ -8,12 +8,20 @@ export default class ClientInfo extends Component{
   constructor(props) {
     super(props);
     this.state = {
+      timePased: false,
       loading: true,
       ClientInfo: null
     };
   }
 
     componentDidMount(){
+      setTimeout(
+       function() {
+         this.setState({timePased:true})
+       }
+       .bind(this),
+       3000
+      )
       fetch("http://localhost:3000/clientsInfo/")
       .then(res => {
         console.log(res);
@@ -57,10 +65,12 @@ export default class ClientInfo extends Component{
           )
         })
         this.setState({ClientInfo,loading:false})
-      })
+      }).catch(err=> {
+        this.setState({loading:false})
+    });
     }
     render(){
-      let {loading} = this.state;
+      let {loading,timePased} = this.state;
         return(
             <Container className = "fillScreen">
                 <div className="info-wrapper">
@@ -71,7 +81,7 @@ export default class ClientInfo extends Component{
                           <Icon name="add user" size="huge" className="iconColor"/>
                        </Link>
                      }
-                     {loading &&
+                     {loading && timePased &&   
                        <Dimmer active>
                          <Loader>Loading</Loader>
                        </Dimmer>

@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import {Link} from "react-router-dom";
 import { Field, reduxForm } from 'redux-form'
 import Date from './datepicker';
 import FormErrors from './FormErrors'
@@ -33,7 +34,8 @@ class ProfileForm extends React.Component{
      cityValid:false,
      fullNameValid: false,
      addressValid:false,
-     formValid: false
+     formValid: false,
+     editMode: false
    }
 
   handleChange = (e, { name, value }) =>{
@@ -52,8 +54,20 @@ class ProfileForm extends React.Component{
       state: "TX"
       zipCode: 78666
     */
+    let formState = this.props.location.state? {
+      ...this.props.location.state,
+      emailValid: true,
+      stateValid:true,
+      phoneValid: true,
+      zipcodeValid: true,
+      cityValid:true,
+      fullNameValid: true,
+      addressValid:true,
+      formValid: true,
+      editMode:true
+    }: {}
     this.setState({
-        ...this.props.location.state
+        ...formState,
     })
     console.log('from profileForm',this.props.location.state);
   }
@@ -121,6 +135,7 @@ validateForm() {
 render(){
   const {
     formValid,
+    editMode,
     email,
     phone,
     state,
@@ -193,8 +208,15 @@ render(){
                  </Form.Field>
                </div>
               <Form.Group width = 'equal'>
-              </Form.Group>
               <Form.Button content='Submit' disabled={!formValid} />
+                {/* <Form.Button content='Cancel' disabled={!editMode} />*/}
+              <Link to="/clientInfo">
+               <Button content='Cancel'/>
+              </Link>
+
+
+              </Form.Group>
+
           </Form>
        </Container>
 

@@ -10,6 +10,7 @@ import Footer from './footer.js'
 import {Provider} from 'react-redux';
 import configureStore from './redux/store';
 import { BrowserRouter, Route } from "react-router-dom";
+import {Link} from "react-router-dom";
 
 
 const store = configureStore();
@@ -22,7 +23,9 @@ class App extends Component {
               <BrowserRouter>
                   <div>
                       <header className="App-header">
-                          Gas Cooperation
+                          <Link to="/clientInfo" className = "logo">
+                            <i class="fas fa-gas-pump"></i>  Gas thingy 
+                          </Link>
                           <Menu/>
                       </header>
                       <Route path="/" exact component={ClientInfo}/>
