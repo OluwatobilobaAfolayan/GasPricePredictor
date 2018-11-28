@@ -9,6 +9,16 @@
   cursor: pointer;
 }
 
+.disabledProfileInput > .disabled{
+  opacity: .70 !important;  
+}
+.disabledProfileInput > .disabled > input{
+  opacity: 1 !important;
+}
+
+.disabledProfileInput{
+  cursor:not-allowed;
+}
 
 .App-header {
   /* background-color: #222;

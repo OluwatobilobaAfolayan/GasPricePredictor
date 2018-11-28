@@ -19,6 +19,8 @@ import './App.css'
 class ProfileForm extends React.Component{
 
   state = {
+     _id:'',
+     clientId:1,
      fullName: '',
      address:'',
      zipCode: '',
@@ -35,27 +37,20 @@ class ProfileForm extends React.Component{
      fullNameValid: false,
      addressValid:false,
      formValid: false,
-     editMode: false
+     readOnlyMode: false
    }
 
   handleChange = (e, { name, value }) =>{
     console.log(name);
      this.setState({ [name]: value }, () => { this.validateField(name, value) })
   }
+  
+  switchToEdit = () => this.setState({readOnlyMode:false})
 
   componentDidMount(){
-    /*
-      address: "611 San Marcos Drive"
-      city: "San Marcos"
-      clientId: 1
-      email: "xyz@test.com"
-      fullName: "Raj Singh"
-      phone: 674938888
-      state: "TX"
-      zipCode: 78666
-    */
-    let formState = this.props.location.state? {
-      ...this.props.location.state,
+  
+    let formState = this.props.userInfo? {
+      ...this.props.userInfo,
       emailValid: true,
       stateValid:true,
       phoneValid: true,
@@ -64,22 +59,37 @@ class ProfileForm extends React.Component{
       fullNameValid: true,
       addressValid:true,
       formValid: true,
-      editMode:true
+      readOnlyMode:true
     }: {}
     this.setState({
         ...formState,
     })
-    console.log('from profileForm',this.props.location.state);
+    
+    
   }
   handleSubmit = ()=> {
-    // const {
-    //   date,
-    //   suggestedPrice,
-    //   totalAmountDue,
-    //   phone,
-    //   email,
-    //   name,
-    // } = this.state;
+    const {
+      fullName,
+      address,
+      zipCode,
+      city,
+      state,
+      phone,
+      email,
+      clientId,
+      _id
+    } = this.state;
+    let payload = {clientId,fullName,address,zipCode,city,state,phone,email}
+    console.log(_id,payload);
+      fetch(`http://localhost:3000/clientsInfo/${_id}`,{
+        method:'PUT',
+        body:payload
+    })
+    .then(res => res.json())
+    .then(data => console.log('Success:', data))
+    .catch(error => console.error('Errorsss:', error));
+    
+  
   }
 
   validateField(fieldName, value) {
@@ -94,11 +104,11 @@ class ProfileForm extends React.Component{
         formErrors.phone = phoneValid ? '' : ' is invalid';
         break;
       case 'state':
-        stateValid = value.match(/^[a-zA-Z]+$/);
+        stateValid = value.match(/^(?![\s.]+$)[a-zA-Z\s.]*$/) && value.length>0;
         formErrors.state = stateValid ? '' : ' not valid';
         break;
       case 'city':
-        cityValid = value.match(/^[a-zA-Z]+$/);
+        cityValid = value.match(/^(?![\s.]+$)[a-zA-Z\s.]*$/) && value.length>0;
         formErrors.city = cityValid ? '' : ' not valid';
         break;
       case 'zipCode':
@@ -106,7 +116,7 @@ class ProfileForm extends React.Component{
         formErrors.zipCode = zipcodeValid?'':'not valid'
         break;
       case 'fullName':
-        fullNameValid = value.match(/^[a-zA-Z]+$/);
+        fullNameValid = value.match(/^(?![\s.]+$)[a-zA-Z\s.]*$/) && value.length>0;
         formErrors.fullName = fullNameValid ? '' : ' not valid';
         break;
       case 'address':
@@ -127,15 +137,15 @@ class ProfileForm extends React.Component{
                   }, this.validateForm);
  }
 
-validateForm() {
-  let {emailValid,phoneValid,stateValid,zipcodeValid,cityValid,addressRequestedValid,fullNameValid} = this.state;
-  this.setState({formValid: emailValid&&phoneValid&&stateValid&&zipcodeValid&&cityValid&&addressRequestedValid&&fullNameValid});
+validateForm(x) {
+  let {emailValid,phoneValid,stateValid,zipcodeValid,cityValid,addressValid,fullNameValid} = this.state;
+  this.setState({formValid: emailValid&&phoneValid&&stateValid&&zipcodeValid&&cityValid&&addressValid&&fullNameValid});
 }
 
 render(){
   const {
     formValid,
-    editMode,
+    readOnlyMode,
     email,
     phone,
     state,
@@ -145,74 +155,70 @@ render(){
     fullName
   } = this.state;
 
-  /*
-    "fullName":"Dele Alli", <string valid
-    "address":"123 Main Street",
-    "city":"Austin", <string valid
-    "state":"TX", <string valid
-    "zipCode":78701, <number 5 digits valid
-    "phone":2101234567, <number valid
-    "email":"testemail@test.com" <email valid
-  */
+
 
     return (
        <Container textAlign='left'>
            <div style ={{padding:'10px'}} hidden={formValid}>
              <FormErrors formErrors={this.state.formErrors} />
           </div>
-          <Form className="profileFormContainer" onSubmit={this.handleSubmit}>
+          <Form className="profileFormContainer" onSubmit={this.handleSubmit} >
                <div className = "profileForm">
-                 <Form.Field>
+                 <Form.Field  className={readOnlyMode?"disabledProfileInput":""}>
                    <label>Name</label>
-                   <Input name='fullName'  value={fullName} onChange={this.handleChange} placeholder='Enter Name'>
+                   <Input disabled = {readOnlyMode} name='fullName'  value={fullName} onChange={this.handleChange} placeholder='Enter Name'>
                      <input />
                    </Input>
                  </Form.Field>
-                 <Form.Field>
+                 <Form.Field className={readOnlyMode?"disabledProfileInput":""}>
                    <label>Address</label>
-                   <Input name='address'  value={address} onChange={this.handleChange} placeholder='Enter address'>
+                   <Input disabled = {readOnlyMode} name='address'  value={address} onChange={this.handleChange} placeholder='Enter address'>
                      <input />
                    </Input>
                  </Form.Field>
-                 <Form.Field>
+                 <Form.Field className={readOnlyMode?"disabledProfileInput":""}>
                    <label>State</label>
-                   <Input name='state'  value={state} onChange={this.handleChange} placeholder='Enter state'>
+                   <Input disabled = {readOnlyMode} name='state'  value={state} onChange={this.handleChange} placeholder='Enter state'>
                      <input />
                    </Input>
                  </Form.Field>
-                 <Form.Field>
+                 <Form.Field className={readOnlyMode?"disabledProfileInput":""}>
                    <label>City</label>
-                   <Input name='city'  value={city} onChange={this.handleChange} placeholder='Enter city'>
+                   <Input disabled = {readOnlyMode} name='city'  value={city} onChange={this.handleChange} placeholder='Enter city'>
                      <input />
                    </Input>
                  </Form.Field>
-                 <Form.Field>
+                 <Form.Field className={readOnlyMode?"disabledProfileInput":""}>
                    <label>Zipcode</label>
-                   <Input name='zipCode'  value={zipCode} onChange={this.handleChange} placeholder='Enter zip code'>
+                   <Input disabled = {readOnlyMode} name='zipCode'  value={zipCode} onChange={this.handleChange} placeholder='Enter zip code'>
                      <input />
                    </Input>
                  </Form.Field>
-                 <Form.Field>
+                 <Form.Field className={readOnlyMode?"disabledProfileInput":""}>
                      <label>Phone Number</label>
-                   <Input name='phone'  value={phone} onChange={this.handleChange} iconPosition='left' placeholder="Enter Phone number" >
+                   <Input disabled = {readOnlyMode} name='phone'  value={phone} onChange={this.handleChange} iconPosition='left' placeholder="Enter Phone number" >
                          <Icon name='phone' />
                          <input />
                    </Input>
                  </Form.Field>
-                 <Form.Field>
+                 <Form.Field className="disabledProfileInput">
                      <label>Email</label>
-                   <Input name='email'  value={email} onChange={this.handleChange} iconPosition='left' placeholder='Email'>
+                   <Input  disabled = {readOnlyMode} name='email'  value={email} onChange={this.handleChange} iconPosition='left' placeholder='Email'>
                          <Icon name='at' />
                          <input />
                      </Input>
                  </Form.Field>
                </div>
               <Form.Group width = 'equal'>
-              <Form.Button content='Submit' disabled={!formValid} />
-                {/* <Form.Button content='Cancel' disabled={!editMode} />*/}
-              <Link to="/clientInfo">
-               <Button content='Cancel'/>
-              </Link>
+              {readOnlyMode && <Form.Button onClick ={this.switchToEdit} content='Edit'/>}
+              {!readOnlyMode &&
+                <Form.Group width = 'equal'>
+                  <Form.Button content='Submit' disabled={!formValid} />
+                  <Link to="/clientInfo">
+                   <Button content='Cancel'/>
+                  </Link> 
+                </Form.Group> 
+              }
 
 
               </Form.Group>

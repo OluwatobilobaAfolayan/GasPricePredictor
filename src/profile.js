@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import {Button, Container,Dimmer, Loader, Icon} from 'semantic-ui-react'
 import {Link} from "react-router-dom";
+import ProfileForm from './profileForm'
 
 export default class Profile extends Component{
 
@@ -23,15 +24,7 @@ export default class Profile extends Component{
     let {loading,clientInfo} = this.state;
     return(
       <div>
-        {!loading && <div>PROFILE WORKS, {clientInfo.address}</div>}
-        <Link to={{
-          pathname:`/profileForm`,
-          state:{
-            ...clientInfo
-          }
-        }}>
-          <Button content='Edit'/>
-        </Link>
+        {!loading &&  <ProfileForm userInfo = {clientInfo}/>}
       </div>
 
     )

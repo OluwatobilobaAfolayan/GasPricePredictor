@@ -36,7 +36,7 @@ class RequestQuoteForm extends React.Component{
      amountValid:false,
      gallonsRequestedValid:false,
      nameValid: false,
-     formValid: false
+     formValid: false,
    }
 
   handleChange = (e, { name, value }) =>{
@@ -100,7 +100,7 @@ class RequestQuoteForm extends React.Component{
                     suggestedValid,
                     amountValid,
                     gallonsRequestedValid,
-                    nameValid
+                    nameValid,
                   }, this.validateForm);
  }
 
