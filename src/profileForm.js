@@ -1,23 +1,12 @@
 import React from 'react';
-import {Link} from "react-router-dom";
-import { Field, reduxForm } from 'redux-form'
-import Date from './datepicker';
+import {Link,Redirect,withRouter} from "react-router-dom";
 import FormErrors from './FormErrors'
 import {Button, Form, Input,Label,Icon,Container} from 'semantic-ui-react'
 import './App.css'
 
-/*
-  "fullName":"Dele Alli", <string valid
-  "address":"123 Main Street",
-  "city":"Austin", <string valid
-  "state":"TX", <string valid
-  "zipCode":78701, <number 5 digits valid
-  "phone":2101234567, <number valid
-  "email":"testemail@test.com" <email valid
-*/
-
 class ProfileForm extends React.Component{
-
+  
+  
   state = {
      _id:'',
      clientId:1,
@@ -37,7 +26,8 @@ class ProfileForm extends React.Component{
      fullNameValid: false,
      addressValid:false,
      formValid: false,
-     readOnlyMode: false
+     readOnlyMode: false,
+     submitting: false,
    }
 
   handleChange = (e, { name, value }) =>{
@@ -48,7 +38,6 @@ class ProfileForm extends React.Component{
   switchToEdit = () => this.setState({readOnlyMode:false})
 
   componentDidMount(){
-  
     let formState = this.props.userInfo? {
       ...this.props.userInfo,
       emailValid: true,
@@ -60,7 +49,23 @@ class ProfileForm extends React.Component{
       addressValid:true,
       formValid: true,
       readOnlyMode:true
-    }: {}
+    }: {
+      fullName: 'test',
+      address:'test',
+      zipCode: '11111',
+      city:'test',
+      state:'test',
+      phone:'1111111111',
+      email:'test@test.com',
+      emailValid: true,
+      stateValid:true,
+      phoneValid: true,
+      zipcodeValid: true,
+      cityValid:true,
+      fullNameValid: true,
+      addressValid:true,
+      formValid: true,
+    }
     this.setState({
         ...formState,
     })
@@ -68,6 +73,7 @@ class ProfileForm extends React.Component{
     
   }
   handleSubmit = ()=> {
+    console.log(this.props)
     const {
       fullName,
       address,
@@ -77,19 +83,44 @@ class ProfileForm extends React.Component{
       phone,
       email,
       clientId,
-      _id
+      _id,
+      submitting,
+      redirect
     } = this.state;
-    let payload = {clientId,fullName,address,zipCode,city,state,phone,email}
-    console.log(_id,payload);
-      fetch(`http://localhost:3000/clientsInfo/${_id}`,{
-        method:'PUT',
-        body:payload
+    this.setState({submitting:true});
+    let payload = JSON.stringify({clientId,fullName,address,city,state,zipCode,phone,email})
+    let param = (_id)?_id:"";
+    let method = (_id)?"PUT":"POST";
+    fetch(`http://localhost:3000/clientsInfo/${param}`,{
+      method,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body:payload
     })
     .then(res => res.json())
-    .then(data => console.log('Success:', data))
-    .catch(error => console.error('Errorsss:', error));
-    
+    .then(data =>{
+      this.props.history.push('/clientInfo');
+      this.setState({submitting:false})
+    })
+    .catch(error => this.setState({submitting:false}));  
+  }
   
+  deleteClient = () => {
+    this.setState({submitting:true});
+    fetch(`http://localhost:3000/clientsInfo/${this.state._id}`,{
+      method:"DELETE",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => {
+      this.props.history.push('/clientInfo');
+      this.setState({submitting:false})
+    })
+    .catch(error => this.setState({submitting:false})); 
   }
 
   validateField(fieldName, value) {
@@ -121,7 +152,8 @@ class ProfileForm extends React.Component{
         break;
       case 'address':
         addressValid = value.length > 0
-        formErrors.address = addressValid? '': 'cannot be empty'
+        formErrors.address = addressValid? '': 'cannot be empty';
+        break;
       default:
         break;
     }
@@ -152,10 +184,9 @@ render(){
     zipCode,
     city,
     address,
-    fullName
+    fullName,
+    submitting
   } = this.state;
-
-
 
     return (
        <Container textAlign='left'>
@@ -210,10 +241,15 @@ render(){
                  </Form.Field>
                </div>
               <Form.Group width = 'equal'>
-              {readOnlyMode && <Form.Button onClick ={this.switchToEdit} content='Edit'/>}
+              {readOnlyMode && 
+                <Form.Group width = 'equal'>
+                  <Form.Button onClick ={this.switchToEdit} content='Edit'/>
+                  <Form.Button disabled={submitting} onClick ={this.deleteClient} color="red" content='Delete'/>
+                </Form.Group>
+              }
               {!readOnlyMode &&
                 <Form.Group width = 'equal'>
-                  <Form.Button content='Submit' disabled={!formValid} />
+                  <Form.Button content='Submit' color="green" disabled={!formValid || submitting} />
                   <Link to="/clientInfo">
                    <Button content='Cancel'/>
                   </Link> 
@@ -225,9 +261,8 @@ render(){
 
           </Form>
        </Container>
-
     )
   }
 };
 
-export default ProfileForm;
+export default withRouter(ProfileForm);

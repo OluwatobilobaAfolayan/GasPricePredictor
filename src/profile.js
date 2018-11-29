@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './App.css';
-import {Button, Container,Dimmer, Loader, Icon} from 'semantic-ui-react'
 import {Link} from "react-router-dom";
 import ProfileForm from './profileForm'
 
@@ -15,7 +14,6 @@ export default class Profile extends Component{
   }
 
   componentDidMount(){
-    const {profileName} = this.props.match.params;
     let clientInfo = this.props.location.state
     this.setState({clientInfo,loading:false})
   }

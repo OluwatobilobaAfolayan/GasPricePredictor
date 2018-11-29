@@ -22,11 +22,11 @@ var ClientInfoSchema = new Schema({
         required: [true, 'State field is required']
     },
     zipCode: {
-        type: Number,
+        type: String,
         required: [true, 'Zip code field is required']
     },
     phone: {
-        type: Number,
+        type: String,
         required: [true, 'Phone number field is required']
     },
     email:{

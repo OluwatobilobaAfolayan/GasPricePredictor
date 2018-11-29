@@ -22,7 +22,10 @@ app.use(function(req, res, next) {
 app.use('/', intro);
 app.use('/clientsInfo', clientInfoController);
 app.use('/quotes', quoteController);
-app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended:true
+})) // for parsing application/json
 app.listen(3000);
 
 

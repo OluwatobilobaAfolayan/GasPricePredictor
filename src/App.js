@@ -24,7 +24,7 @@ class App extends Component {
                   <div>
                       <header className="App-header">
                           <Link to="/clientInfo" className = "logo">
-                            <i class="fas fa-gas-pump"></i>  Gas thingy 
+                            <i className="fas fa-gas-pump"></i>  Gas thingy 
                           </Link>
                           <Menu/>
                       </header>

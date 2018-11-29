@@ -69,6 +69,13 @@ export default class ClientInfo extends Component{
         this.setState({loading:false})
     });
     }
+    
+    componentWillUnmount(){
+      /*Clear timeout logic setfor loader in componentDidMount if we exit page within 3 secs*/
+      if (this.timeout) {
+        clearTimeout(this.timeout)
+      }
+    }
     render(){
       let {loading,timePased} = this.state;
         return(

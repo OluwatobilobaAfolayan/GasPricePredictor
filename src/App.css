@@ -2,7 +2,9 @@
 .App {
   text-align: center;
 }
-
+.ui.red.button{
+  background-color:#fb4747;
+}
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
@@ -10,7 +12,7 @@
 }
 
 .disabledProfileInput > .disabled{
-  opacity: .70 !important;  
+  opacity: .70 !important;
 }
 .disabledProfileInput > .disabled > input{
   opacity: 1 !important;

@@ -47,6 +47,7 @@ router.post('/', function (req, res){
 //PUT: update client info
 router.put('/:id', function (req, res) {
     ClientInfo.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, client) {
+        console.log('checking the client ',req.body,client);
         if (err) return res.status(500).send("There was a problem updating this client.");
             res.status(200).send(client);
     });
