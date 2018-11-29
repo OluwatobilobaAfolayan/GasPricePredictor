@@ -1,9 +1,9 @@
 import React from 'react';
 import {Link,Redirect,withRouter} from "react-router-dom";
 import FormErrors from './FormErrors'
-import {Button, Form, Input,Label,Icon,Container} from 'semantic-ui-react'
+import {Button, Form, Input,Label,Icon,Container,Dropdown} from 'semantic-ui-react'
 import './App.css'
-
+import {stateOptions,cityOptions} from './states-cities';
 class ProfileForm extends React.Component{
   
   
@@ -28,16 +28,25 @@ class ProfileForm extends React.Component{
      formValid: false,
      readOnlyMode: false,
      submitting: false,
+     filteredCities:null
    }
 
   handleChange = (e, { name, value }) =>{
     console.log(name);
      this.setState({ [name]: value }, () => { this.validateField(name, value) })
+     if (name === 'state'){
+       let filteredCities = cityOptions(value);
+        console.log('after state change',filteredCities);
+        this.setState({filteredCities})
+     }
+     
+    
   }
   
   switchToEdit = () => this.setState({readOnlyMode:false})
 
   componentDidMount(){
+    let filteredCities = cityOptions(this.props.userInfo.state);
     let formState = this.props.userInfo? {
       ...this.props.userInfo,
       emailValid: true,
@@ -68,6 +77,7 @@ class ProfileForm extends React.Component{
     }
     this.setState({
         ...formState,
+        filteredCities
     })
     
     
@@ -185,7 +195,8 @@ render(){
     city,
     address,
     fullName,
-    submitting
+    submitting,
+    filteredCities
   } = this.state;
 
     return (
@@ -207,17 +218,30 @@ render(){
                      <input />
                    </Input>
                  </Form.Field>
-                 <Form.Field className={readOnlyMode?"disabledProfileInput":""}>
+                 {/*
+                   <Form.Field className={readOnlyMode?"disabledProfileInput":""}>
+                     <label>State</label>
+                     <Input disabled = {readOnlyMode} name='state'  value={state} onChange={this.handleChange} placeholder='Enter state'>
+                       <input />
+                     </Input>
+                   </Form.Field>
+                   */}
+                 <Form.Field  className={readOnlyMode?"disabledProfileInput":""}>
                    <label>State</label>
-                   <Input disabled = {readOnlyMode} name='state'  value={state} onChange={this.handleChange} placeholder='Enter state'>
-                     <input />
-                   </Input>
+                    <Dropdown disabled = {readOnlyMode} name='state'  value={state} onChange={this.handleChange} placeholder='Enter state' search selection options={stateOptions} />
                  </Form.Field>
-                 <Form.Field className={readOnlyMode?"disabledProfileInput":""}>
+                 {/*
+                   <Form.Field className={readOnlyMode?"disabledProfileInput":""}>
+                     <label>City</label>
+                     <Input disabled = {readOnlyMode} name='city'  value={city} onChange={this.handleChange} placeholder='Enter city'>
+                       <input />
+                     </Input>
+                   </Form.Field>
+                  */}
+                 
+                 <Form.Field  className={readOnlyMode?"disabledProfileInput":""}>
                    <label>City</label>
-                   <Input disabled = {readOnlyMode} name='city'  value={city} onChange={this.handleChange} placeholder='Enter city'>
-                     <input />
-                   </Input>
+                    <Dropdown disabled = {readOnlyMode} name='city'  value={city} onChange={this.handleChange} placeholder='Enter city' search selection options={filteredCities}/>
                  </Form.Field>
                  <Form.Field className={readOnlyMode?"disabledProfileInput":""}>
                    <label>Zipcode</label>
