@@ -32,11 +32,9 @@ class ProfileForm extends React.Component{
    }
 
   handleChange = (e, { name, value }) =>{
-    console.log(name);
      this.setState({ [name]: value }, () => { this.validateField(name, value) })
      if (name === 'state'){
        let filteredCities = cityOptions(value);
-        console.log('after state change',filteredCities);
         this.setState({filteredCities})
      }
      
@@ -46,9 +44,9 @@ class ProfileForm extends React.Component{
   switchToEdit = () => this.setState({readOnlyMode:false})
 
   componentDidMount(){
-    let filteredCities = cityOptions(this.props.userInfo.state);
     let formState = this.props.userInfo? {
       ...this.props.userInfo,
+      filteredCities: cityOptions(this.props.userInfo.state),
       emailValid: true,
       stateValid:true,
       phoneValid: true,
@@ -75,10 +73,7 @@ class ProfileForm extends React.Component{
       addressValid:true,
       formValid: true,
     }
-    this.setState({
-        ...formState,
-        filteredCities
-    })
+    this.setState({...formState})
     
     
   }
