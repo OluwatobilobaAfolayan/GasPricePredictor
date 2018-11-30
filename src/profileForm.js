@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link,Redirect,withRouter} from "react-router-dom";
+import {Link} from "react-router-dom";
 import FormErrors from './FormErrors'
 import {Button, Form, Input,Label,Icon,Container,Dropdown} from 'semantic-ui-react'
 import './App.css'
@@ -29,7 +29,7 @@ class ProfileForm extends React.Component{
      readOnlyMode: false,
      submitting: false,
      filteredCities:null
-   }
+   };
 
   handleChange = (e, { name, value }) =>{
      this.setState({ [name]: value }, () => { this.validateField(name, value) })
@@ -39,7 +39,7 @@ class ProfileForm extends React.Component{
      }
      
     
-  }
+  };
   
   switchToEdit = () => this.setState({readOnlyMode:false})
 
@@ -72,13 +72,13 @@ class ProfileForm extends React.Component{
       fullNameValid: true,
       addressValid:true,
       formValid: true,
-    }
+    };
     this.setState({...formState})
     
     
   }
   handleSubmit = ()=> {
-    console.log(this.props)
+    console.log(this.props);
     const {
       fullName,
       address,
@@ -110,7 +110,7 @@ class ProfileForm extends React.Component{
       this.setState({submitting:false})
     })
     .catch(error => this.setState({submitting:false}));  
-  }
+  };
   
   deleteClient = () => {
     this.setState({submitting:true});
@@ -126,7 +126,7 @@ class ProfileForm extends React.Component{
       this.setState({submitting:false})
     })
     .catch(error => this.setState({submitting:false})); 
-  }
+  };
 
   validateField(fieldName, value) {
     let {formErrors,emailValid,phoneValid,stateValid,zipcodeValid,cityValid,addressValid,fullNameValid} = this.state;
@@ -156,7 +156,7 @@ class ProfileForm extends React.Component{
         formErrors.fullName = fullNameValid ? '' : ' not valid';
         break;
       case 'address':
-        addressValid = value.length > 0
+        addressValid = value.length > 0;
         formErrors.address = addressValid? '': 'cannot be empty';
         break;
       default:
@@ -199,8 +199,8 @@ render(){
            <div style ={{padding:'10px'}} hidden={formValid}>
              <FormErrors formErrors={this.state.formErrors} />
           </div>
-          <Form className="profileFormContainer" onSubmit={this.handleSubmit} >
-               <div className = "profileForm">
+          <Form className="FormContainer " onSubmit={this.handleSubmit} >
+               <div className = "appform formCard">
                  <Form.Field  className={readOnlyMode?"disabledProfileInput":""}>
                    <label>Name</label>
                    <Input disabled = {readOnlyMode} name='fullName'  value={fullName} onChange={this.handleChange} placeholder='Enter Name'>
@@ -282,6 +282,6 @@ render(){
        </Container>
     )
   }
-};
+}
 
-export default withRouter(ProfileForm);
+export default ProfileForm;

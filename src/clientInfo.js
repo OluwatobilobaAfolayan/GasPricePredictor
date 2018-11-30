@@ -21,14 +21,14 @@ export default class ClientInfo extends Component{
        }
        .bind(this),
        3000
-      )
+      );
       fetch("http://localhost:3000/clientsInfo/")
       .then(res => {
         console.log(res);
         return res.json();
       })
       .then(data => {
-        console.log(data)
+        console.log(data);
         let ClientInfo = data.map((user,index)=>{
           return(
             <Link to={{
@@ -63,7 +63,7 @@ export default class ClientInfo extends Component{
               </div>
            </Link>
           )
-        })
+        });
         this.setState({ClientInfo,loading:false})
       }).catch(err=> {
         this.setState({loading:false})

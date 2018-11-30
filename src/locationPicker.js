@@ -17,14 +17,22 @@ export default class Location extends Component {
             style: "mapbox://styles/mapbox/streets-v9'"
         }
     };
+    
+    changeViewPort(viewport){
+      console.log("new view port",viewport);
+       this.setState({viewport})
+    }
+    onChangelocation(){
+      
+    }
 
     render() {
         return (
             <ReactMapGL
                 mapboxApiAccessToken={"pk.eyJ1IjoiZGltZWppLWZhbHV5aSIsImEiOiJjam1jaTcyZjY1eWNyM3BwNHZtajYydXZnIn0.Gan6xLSfEl7n7CK6edDz8Q"}
-                {...this.state.viewport}
+                {...this.props.viewport}
                 mapStyle ={'mapbox://styles/mapbox/streets-v9'}
-                onViewportChange={(viewport) => this.setState({viewport})}
+                onViewportChange={this.changeViewPort}
             />
         );
     }
