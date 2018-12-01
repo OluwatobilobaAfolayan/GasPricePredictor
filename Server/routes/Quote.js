@@ -32,7 +32,7 @@ var Quote = new mongoose.Schema({
       required: [true, 'Location is required']
   },
   deliveryZipCode:{
-      type: Number,
+      type: String,
       required: [true, 'Location is required']
   },
   deliveryContactName:{
@@ -40,7 +40,7 @@ var Quote = new mongoose.Schema({
       required: [true, 'Delivery Contact Name is required']
   },
   deliveryContactPhone:{
-      type: Number,
+      type: String,
       required: [true, 'Contact Phone Number is required']
   },
   deliveryContactEmail:{

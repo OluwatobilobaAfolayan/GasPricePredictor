@@ -6043,7 +6043,7 @@ let cities = [
 {'city': 'Zion', 'state': 'Illinois'},
 {'city': 'Zionsville', 'state': 'Indiana'},
 {'city': 'Zuni Pueblo', 'state': 'New Mexico'},
-  ]
+  ];
 
 // must be in this format
 // let stateoptions = [
@@ -6052,13 +6052,13 @@ let cities = [
 
 let stateOptions = Object.keys(states).map(key=>{
   return {key:key,value:states[key],text:states[key]}
-})
+});
 let count = 0;
 let cityOptions = (state)=>{
   return cities.filter(city=>city.state===state).map(city=>{
     return {key:count++,value:city.city,text:city.city}
   })
-}
+};
 
 export {
   stateOptions,

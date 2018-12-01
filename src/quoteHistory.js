@@ -6,7 +6,7 @@ export default class QuoteHistory extends React.Component{
    state = {
       data:[],
       loading:false,
-    }
+    };
     componentDidMount(){
       this.setState({loading:true});
       fetch("http://localhost:3000/quotes/")

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from "react-router-dom";
+import {Link,withRouter} from "react-router-dom";
 import FormErrors from './FormErrors'
 import {Button, Form, Input,Label,Icon,Container,Dropdown} from 'semantic-ui-react'
 import './App.css'
@@ -65,13 +65,13 @@ class ProfileForm extends React.Component{
       phone:'1111111111',
       email:'test@test.com',
       emailValid: true,
-      stateValid:true,
+      stateValid:false,
       phoneValid: true,
       zipcodeValid: true,
-      cityValid:true,
+      cityValid:false,
       fullNameValid: true,
       addressValid:true,
-      formValid: true,
+      formValid: false,
     };
     this.setState({...formState})
     
@@ -262,16 +262,19 @@ render(){
               <Form.Group width = 'equal'>
               {readOnlyMode && 
                 <Form.Group width = 'equal'>
+                    <Link to="/clientInfo">
+                        <Form.Button content='Cancel'/>
+                    </Link>
                   <Form.Button onClick ={this.switchToEdit} content='Edit'/>
                   <Form.Button disabled={submitting} onClick ={this.deleteClient} color="red" content='Delete'/>
                 </Form.Group>
               }
               {!readOnlyMode &&
-                <Form.Group width = 'equal'>
-                  <Form.Button content='Submit' color="green" disabled={!formValid || submitting} />
+                <Form.Group  disabled = {submitting} width = 'equal'>
+                  <Form.Button content='Submit' color="green" disabled={!formValid} />
                   <Link to="/clientInfo">
                    <Button content='Cancel'/>
-                  </Link> 
+                  </Link>
                 </Form.Group> 
               }
 
@@ -284,4 +287,4 @@ render(){
   }
 }
 
-export default ProfileForm;
+export default withRouter(ProfileForm);
