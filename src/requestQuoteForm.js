@@ -10,6 +10,7 @@ import {Link,withRouter} from "react-router-dom";
 class RequestQuoteForm extends React.Component{
 
   state = {
+      _id:'',
      name: '',
      gallonsRequested:0,
      date: '',
@@ -38,7 +39,8 @@ class RequestQuoteForm extends React.Component{
      filteredCities:null,
      clientOptions: null,
      clientToStateMap: {},
-     quoteHistoryToClientMap:{}
+     quoteHistoryToClientMap:{},
+     readOnlyMode:false,
    };
 
   handleChange = (e, { name, value }) =>{
@@ -74,6 +76,55 @@ class RequestQuoteForm extends React.Component{
               this.setState({quoteHistoryToClientMap})
           })
           .catch(err=>console.log('error from quotes call',err));
+      //if coming from quoteHistory page prefill form.
+      if (this.props.location.state){
+          let {
+              _id,
+              gallonsRequested,
+              requestDate,
+              deliveryDate,
+              deliveryAddress,
+              deliveryCity,
+              deliveryState,
+              deliveryZipCode,
+              deliveryContactName,
+              deliveryContactPhone,
+              deliveryContactEmail,
+              suggestedPrice,
+              totalAmountDue
+          } = this.props.location.state;
+          let formState = {
+              _id,
+              gallonsRequested,
+              requestDate,
+              date:deliveryDate.slice(0,10),
+              address:deliveryAddress,
+              city:deliveryCity ,
+              state:deliveryState ,
+              zipCode:deliveryZipCode ,
+              name:deliveryContactName ,
+              phone:deliveryContactPhone ,
+              email:deliveryContactEmail,
+              suggestedPrice,
+              totalAmountDue,
+              client:"5be1141d743dba3fd88e9052",//should change later to get proper client ID
+              filteredCities:cityOptions(deliveryState),
+              formValid:true,
+              emailValid: true,
+              dateValid:true,
+              phoneValid: true,
+              gallonsRequestedValid:true,
+              stateValid:true,
+              zipcodeValid: true,
+              addressValid:true,
+              cityValid:true,
+              nameValid: true,
+              clientValid:true,
+              readOnlyMode:true
+          };
+
+          this.setState({...formState});
+      }
 
       //uncomment to run test state
       // let testState = {
@@ -109,13 +160,14 @@ class RequestQuoteForm extends React.Component{
       state,
       city,
       zipCode,
-      address
-    } = this.state;
+      address,
+      _id,
+      } = this.state;
       console.log(typeof suggestedPrice,
           typeof totalAmountDue, typeof zipCode);
     let requestDate = new Date();
     let deliveryDate = new Date(date);
-    let payload = {
+    let payload = JSON.stringify({
           quoteId: 1,
           clientId: 1,
           gallonsRequested,
@@ -130,14 +182,16 @@ class RequestQuoteForm extends React.Component{
           deliveryContactEmail:email,
           suggestedPrice,
           totalAmountDue
-    };
-      fetch(`http://localhost:3000/quotes/`,{
-          method:"POST",
+    });
+      let param = (_id)?_id:"";
+      let method = (_id)?"PUT":"POST";
+      fetch(`http://localhost:3000/quotes/${param}`,{
+          method,
           headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
           },
-          body:JSON.stringify(payload)
+          body:payload
       })
           .then(res => res.json())
           .then(() =>{
@@ -148,7 +202,21 @@ class RequestQuoteForm extends React.Component{
 
     // this.setState({})
   };
-
+    deleteClient = () => {
+        this.setState({submitting:true});
+        fetch(`http://localhost:3000/quotes/${this.state._id}`,{
+            method:"DELETE",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => {
+                this.props.history.push('/clientInfo');
+                this.setState({submitting:false})
+            })
+            .catch(error => this.setState({submitting:false}));
+    };
   validateField(fieldName, value) {
     let {formErrors,emailValid,phoneValid,dateValid,gallonsRequestedValid,nameValid,stateValid,zipcodeValid,cityValid,addressValid,clientValid} = this.state;
     switch(fieldName) {
@@ -242,7 +310,8 @@ render(){
     client,
     clientOptions,
     filteredCities,
-    submitting
+    submitting,
+    readOnlyMode,
   } = this.state;
     return (
        <Container textAlign='left'>
@@ -252,53 +321,53 @@ render(){
            <Form className="FormContainer" onSubmit={this.handleSubmit}>
                <div className = "appform formCard">
                    {/* <Field name="gallonsRequested" component={gallonsRequested} type="text" /> */}
-                   <Form.Field>
+                   <Form.Field   className={readOnlyMode?"disabledProfileInput":""}>
                        <label>Client</label>
-                       <Dropdown name='client'  value={client} onChange={this.handleChange} placeholder='Enter client' search selection options={clientOptions} />
+                       <Dropdown disabled = {readOnlyMode} name='client'  value={client} onChange={this.handleChange} placeholder='Enter client' search selection options={clientOptions} />
                    </Form.Field>
                    <Form.Input  label='Gallons Requested' placeholder='Enter Amount' name='gallonsRequested' value={gallonsRequested} onChange={this.handleChange} />
-                   <Form.Field >
+                   <Form.Field   className={readOnlyMode?"disabledProfileInput":""}>
                        <label>Delivery Date</label>
-                       <Input name='date' value={date} onChange={this.handleChange}  labelPosition='left' type='text' placeholder='Price?'>
+                       <Input disabled = {readOnlyMode} name='date' value={date} onChange={this.handleChange}  labelPosition='left' type='text' placeholder='Price?'>
                            <input type='date'/>
                        </Input>
                    </Form.Field>
-                   <Form.Field>
+                   <Form.Field className={readOnlyMode?"disabledProfileInput":""}>
                        <label>Address</label>
-                       <Input name='address'  value={address} onChange={this.handleChange} placeholder='Enter address'>
+                       <Input disabled = {readOnlyMode} name='address'  value={address} onChange={this.handleChange} placeholder='Enter address'>
                            <input />
                        </Input>
                    </Form.Field>
-                   <Form.Field >
+                   <Form.Field   className={readOnlyMode?"disabledProfileInput":""}>
                        <label>State</label>
-                       <Dropdown name='state'  value={state} onChange={this.handleChange} placeholder='Enter state' search selection options={stateOptions} />
+                       <Dropdown disabled = {readOnlyMode} name='state'  value={state} onChange={this.handleChange} placeholder='Enter state' search selection options={stateOptions} />
                    </Form.Field>
-                   <Form.Field  >
+                   <Form.Field    className={readOnlyMode?"disabledProfileInput":""}>
                        <label>City</label>
-                       <Dropdown  name='city'  value={city} onChange={this.handleChange} placeholder='Enter city' search selection options={filteredCities}/>
+                       <Dropdown disabled = {readOnlyMode} name='city'  value={city} onChange={this.handleChange} placeholder='Enter city' search selection options={filteredCities}/>
                    </Form.Field>
-                   <Form.Field >
+                   <Form.Field   className={readOnlyMode?"disabledProfileInput":""}>
                        <label>Zipcode</label>
-                       <Input name='zipCode'  value={zipCode} onChange={this.handleChange} placeholder='Enter zip code'>
+                       <Input disabled = {readOnlyMode} name='zipCode'  value={zipCode} onChange={this.handleChange} placeholder='Enter zip code'>
                            <input />
                        </Input>
                    </Form.Field>
-                   <Form.Field>
+                   <Form.Field  className={readOnlyMode?"disabledProfileInput":""}>
                        <label>Name</label>
-                       <Input name='name'  value={name} onChange={this.handleChange} placeholder='Enter Name'>
+                       <Input disabled = {readOnlyMode} name='name'  value={name} onChange={this.handleChange} placeholder='Enter Name'>
                            <input />
                        </Input>
                    </Form.Field>
-                   <Form.Field>
+                   <Form.Field  className={readOnlyMode?"disabledProfileInput":""}>
                        <label>Phone Number</label>
-                       <Input name='phone'  value={phone} onChange={this.handleChange} iconPosition='left' placeholder="Enter Phone number" >
+                       <Input disabled = {readOnlyMode} name='phone'  value={phone} onChange={this.handleChange} iconPosition='left' placeholder="Enter Phone number" >
                            <Icon name='phone' />
                            <input />
                        </Input>
                    </Form.Field>
-                   <Form.Field>
+                   <Form.Field  className={readOnlyMode?"disabledProfileInput":""}>
                        <label>Email</label>
-                       <Input name='email'  value={email} onChange={this.handleChange} iconPosition='left' placeholder='Email'>
+                       <Input disabled = {readOnlyMode} name='email'  value={email} onChange={this.handleChange} iconPosition='left' placeholder='Email'>
                            <Icon name='at' />
                            <input />
                        </Input>
@@ -318,12 +387,23 @@ render(){
                        </Input>
                    </Form.Field>
                </div>
-               <Form.Group disabled = {submitting} width = 'equal'>
-                   <Form.Button content='Submit' color="green" disabled={!formValid} />
+               {readOnlyMode &&
+               <Form.Group width = 'equal'>
+                   <Link to="/clientInfo">
+                       <Form.Button content='Cancel'/>
+                   </Link>
+                   <Form.Button onClick ={() => this.setState({readOnlyMode:false})} content='Edit'/>
+                   <Form.Button disabled={submitting} onClick ={this.deleteClient} color="red" content='Delete'/>
+               </Form.Group>
+               }
+               {!readOnlyMode &&
+               <Form.Group disabled={submitting} width='equal'>
+                   <Form.Button content='Submit' color="green" disabled={!formValid}/>
                    <Link to="/clientInfo">
                        <Button content='Cancel'/>
                    </Link>
                </Form.Group>
+               }
            </Form>
        </Container>
 

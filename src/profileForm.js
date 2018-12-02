@@ -41,7 +41,7 @@ class ProfileForm extends React.Component{
     
   };
   
-  switchToEdit = () => this.setState({readOnlyMode:false})
+
 
   componentDidMount(){
     let formState = this.props.userInfo? {
@@ -89,8 +89,6 @@ class ProfileForm extends React.Component{
       email,
       clientId,
       _id,
-      submitting,
-      redirect
     } = this.state;
     this.setState({submitting:true});
     let payload = JSON.stringify({clientId,fullName,address,city,state,zipCode,phone,email})
@@ -265,7 +263,7 @@ render(){
                     <Link to="/clientInfo">
                         <Form.Button content='Cancel'/>
                     </Link>
-                  <Form.Button onClick ={this.switchToEdit} content='Edit'/>
+                  <Form.Button onClick ={() => this.setState({readOnlyMode:false})} content='Edit'/>
                   <Form.Button disabled={submitting} onClick ={this.deleteClient} color="red" content='Delete'/>
                 </Form.Group>
               }

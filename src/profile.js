@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './App.css';
-import {Link} from "react-router-dom";
 import ProfileForm from './profileForm'
 
 export default class Profile extends Component{
@@ -14,7 +13,7 @@ export default class Profile extends Component{
   }
 
   componentDidMount(){
-    let clientInfo = this.props.location.state
+    let clientInfo = this.props.location.state;
     this.setState({clientInfo,loading:false})
   }
 
